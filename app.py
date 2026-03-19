@@ -33,11 +33,13 @@ init_db()
 # ============================================================
 # Page Config & Global Styling
 # ============================================================
-st.set_page_config(page_title="Sprint Staffing Optimizer", page_icon="🚀", layout="wide")
+# st.set_page_config(page_title="Sprint Staffing Optimizer", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="Sprint Staffing Optimizer", layout="wide")
 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0');
 
 html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
@@ -62,17 +64,58 @@ section[data-testid="stSidebar"] * { color: #e0e0e0 !important; }
 
 /* Glassmorphism cards */
 .kpi-card {
-    background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.15);
+    background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 16px;
-    padding: 22px 18px;
+    padding: 24px 18px;
     text-align: center;
-    transition: transform .2s ease, box-shadow .2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
-.kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
-.kpi-value  { font-size: 2.4rem; font-weight: 700; color: #a78bfa; }
-.kpi-label  { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
+.kpi-card:hover { 
+    transform: translateY(-6px); 
+    box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.5); 
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.kpi-icon-wrapper {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 64px;
+}
+.kpi-value { 
+    font-size: 2.8rem; 
+    font-weight: 500; 
+    color: #e2e8f0; 
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(255,255,255,0.1);
+}
+.kpi-label { 
+    font-size: 0.95rem; 
+    color: #cbd5e1; 
+    font-weight: 400;
+    margin-top: 8px; 
+    letter-spacing: 0.5px;
+}
+
+/* Info Box Below Cards */
+.info-glass-box {
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 16px 24px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
 
 /* Status badges */
 .badge-not-started { background:#334155; color:#94a3b8; padding:2px 10px; border-radius:999px; font-size:0.78rem; }
@@ -83,8 +126,36 @@ section[data-testid="stSidebar"] * { color: #e0e0e0 !important; }
 /* Override data_editor dark */
 .stDataFrame { border-radius: 10px; overflow: hidden; }
 
-/* Tab styling */
-div[data-baseweb="tab-list"] button { font-weight: 500; }
+/* Tab styling additions */
+div[data-baseweb="tab-list"] { gap: 8px; }
+div[data-baseweb="tab-list"] button { font-weight: 500; color: #94a3b8; }
+div[data-baseweb="tab-list"] button[aria-selected="true"] { color: #60a5fa !important; }
+
+div[data-baseweb="tab-list"] button p::before {
+    font-family: 'Material Symbols Rounded';
+    font-size: 1.25rem;
+    vertical-align: middle;
+    margin-right: 8px;
+    font-weight: normal;
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}
+
+div[data-baseweb="tab-list"] button:nth-child(1) p::before { content: 'grid_view'; }
+div[data-baseweb="tab-list"] button:nth-child(2) p::before { content: 'format_list_bulleted'; }
+div[data-baseweb="tab-list"] button:nth-child(3) p::before { content: 'groups'; }
+div[data-baseweb="tab-list"] button:nth-child(4) p::before { content: 'query_stats'; }
+div[data-baseweb="tab-list"] button:nth-child(5) p::before { content: 'bar_chart'; }
+div[data-baseweb="tab-list"] button:nth-child(6) p::before { content: 'calendar_month'; }
+div[data-baseweb="tab-list"] button:nth-child(7) p::before { content: 'apps'; }
+div[data-baseweb="tab-list"] button:nth-child(8) p::before { content: 'edit_square'; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -104,10 +175,10 @@ for k, v in defaults.items():
 # Sidebar
 # ============================================================
 with st.sidebar:
-    st.markdown("## ⚙️ Configuration")
+    st.markdown('<div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;">⚙️ Configuration</div>', unsafe_allow_html=True)
     st.divider()
 
-    st.markdown("### AI Provider")
+    st.markdown('<div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">AI Provider</div>', unsafe_allow_html=True)
     provider = st.selectbox("Classification Engine", ["Keyword Only", "Gemini", "OpenAI"],
                             label_visibility="collapsed")
 
@@ -123,8 +194,8 @@ with st.sidebar:
             os.environ["OPENAI_API_KEY"] = key
 
     st.divider()
-    st.markdown("### HR API Stub")
-    if st.button("📡 Load from HR API", use_container_width=True):
+    st.markdown('<div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">HR API Stub</div>', unsafe_allow_html=True)
+    if st.button("🛰️ Load from HR API", use_container_width=True):
         employees = get_employees()
         hr_df = pd.DataFrame([{
             "name": e["name"],
@@ -138,14 +209,29 @@ with st.sidebar:
         st.rerun()
 
     st.divider()
-    st.markdown("### Sprint Maturity")
+    st.markdown('<div style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 8px;">Sprint Maturity</div>', unsafe_allow_html=True)
     apply_maturity = st.checkbox("Filter roles by sprint maturity", value=False,
                                  help="Suppress non-functional testing roles in early sprints.")
 
 # ============================================================
 # Header
 # ============================================================
-st.markdown('<div class="main-header">🚀 Automated Sprint Staffing Optimizer</div>', unsafe_allow_html=True)
+st.markdown('''
+<div class="main-header" style="display: flex; align-items: center;">
+  <svg style="margin-right: 12px; filter: drop-shadow(0 0 12px rgba(167,139,250,0.6));" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="url(#headerGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <defs>
+      <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+    <path d="M4 20l4-4" stroke="#60a5fa" stroke-width="2"/>
+    <path d="M2.5 17.5l3-3" stroke="#a78bfa" stroke-width="2"/>
+  </svg>
+  Automated Sprint Staffing Optimizer
+</div>
+''', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Hybrid Intelligence: Gemini + PuLP ILP · PM Override · Learning Loop</div>', unsafe_allow_html=True)
 
 # ============================================================
@@ -153,9 +239,9 @@ st.markdown('<div class="sub-header">Hybrid Intelligence: Gemini + PuLP ILP · P
 # ============================================================
 (tab_dash, tab_backlog, tab_team, tab_analysis,
  tab_plan, tab_gantt, tab_heat, tab_pm) = st.tabs([
-    "🏠 Dashboard", "📋 Backlog", "👥 Team Matrix",
-    "🤖 Analysis", "📊 Staffing Plan",
-    "📅 Gantt Chart", "🔥 Heatmap", "✏️ PM Override",
+    "Dashboard", "Backlog", "Team Matrix",
+    "Analysis", "Staffing Plan",
+    "Gantt Chart", "Heatmap", "PM Override",
 ])
 
 
@@ -169,17 +255,46 @@ with tab_dash:
     assignments   = load_assignments_df()
 
     kpi_cols = st.columns(4)
+    
+    icon_testers = '''<svg viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:64px; height:64px; filter: drop-shadow(0 0 8px rgba(147,197,253,0.6));">
+      <circle cx="12" cy="8" r="5" fill="rgba(147,197,253,0.1)"/>
+      <path d="M20 21a8 8 0 0 0-16 0" fill="rgba(147,197,253,0.1)"/>
+      <path d="M12 13v8" stroke="rgba(255,255,255,0.3)"/>
+      <path d="M10 13l2 3 2-3" stroke="rgba(255,255,255,0.3)"/>
+      <path d="M6 14h2M6 17h3M18 14h-2M18 17h-3" stroke="rgba(255,255,255,0.3)"/>
+    </svg>'''
+    
+    icon_backlog = '''<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:64px; height:64px; filter: drop-shadow(0 0 8px rgba(148,163,184,0.6));">
+       <rect x="4" y="4" width="16" height="4" rx="1" fill="rgba(148,163,184,0.1)"></rect>
+       <path d="M12 8v4"></path>
+       <rect x="2" y="12" width="8" height="4" rx="1" fill="rgba(148,163,184,0.1)"></rect>
+       <rect x="14" y="12" width="8" height="4" rx="1" fill="rgba(148,163,184,0.1)"></rect>
+       <path d="M6 16v4"></path>
+       <rect x="2" y="20" width="8" height="4" rx="1" fill="rgba(148,163,184,0.1)"></rect>
+    </svg>'''
+    
+    icon_classified = '''<svg viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:64px; height:64px; filter: drop-shadow(0 0 8px rgba(203,213,225,0.6));">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" fill="rgba(203,213,225,0.05)"></polygon>
+      <path d="M18 14v6M15 17l3 3 3-3"/>
+    </svg>'''
+    
+    icon_assignments = '''<svg viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:64px; height:64px; filter: drop-shadow(0 0 10px rgba(94,234,212,0.7));">
+      <polyline points="9 11 12 14 22 4"></polyline>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+    </svg>'''
+
     kpis = [
-        ("Testers Loaded", testers_count, "👥"),
-        ("Backlog Tasks",  backlog_count,  "📋"),
-        ("Classified",     len(classified) if classified is not None else 0, "🤖"),
-        ("Assignments",    len(assignments), "✅"),
+        ("Testers Loaded", testers_count, icon_testers),
+        ("Backlog Tasks",  backlog_count, icon_backlog),
+        ("Classified",     len(classified) if classified is not None else 0, icon_classified),
+        ("Assignments",    len(assignments), icon_assignments),
     ]
     for col, (label, val, icon) in zip(kpi_cols, kpis):
         with col:
             st.markdown(f"""
             <div class="kpi-card">
-              <div class="kpi-value">{icon} {val}</div>
+              <div class="kpi-icon-wrapper">{icon}</div>
+              <div class="kpi-value">{val}</div>
               <div class="kpi-label">{label}</div>
             </div>""", unsafe_allow_html=True)
 
@@ -201,9 +316,9 @@ with tab_dash:
                                   font_color="#e0e0e0", margin=dict(t=20, b=20))
                 st.plotly_chart(fig, use_container_width=True)
             else:
-                st.info("Run Analysis to see skill distribution.")
+                st.markdown('<div class="info-glass-box">Run Analysis to see skill distribution.</div>', unsafe_allow_html=True)
         else:
-            st.info("Upload a backlog and run Analysis to see the skill distribution chart.")
+            st.markdown('<div class="info-glass-box">Upload a backlog and run Analysis to see the skill distribution chart.</div>', unsafe_allow_html=True)
 
     with c2:
         if not assignments.empty:
@@ -218,7 +333,7 @@ with tab_dash:
                                showlegend=False, coloraxis_showscale=False)
             st.plotly_chart(fig2, use_container_width=True)
         else:
-            st.info("Run the optimizer (Staffing Plan tab) to see workload distribution.")
+            st.markdown('<div class="info-glass-box">Run the optimizer (Staffing Plan tab) to see workload distribution.</div>', unsafe_allow_html=True)
 
     corrections_df = load_corrections_df()
     if not corrections_df.empty:
@@ -249,14 +364,14 @@ with tab_backlog:
                 st.error(f"Missing columns: {missing}")
             else:
                 st.session_state.backlog_df = df
-                st.success(f"✅ Loaded **{len(df)}** tasks.")
+                st.success(f"Loaded **{len(df)}** tasks.")
                 st.dataframe(df, use_container_width=True)
         except Exception as e:
             st.error(f"Error reading file: {e}")
     else:
         col_a, col_b = st.columns(2)
         with col_a:
-            if st.button("📂 Load Sample Backlog", use_container_width=True):
+            if st.button("Load Sample Backlog", use_container_width=True):
                 df = pd.read_csv("sample_data/sample_backlog.csv")
                 st.session_state.backlog_df = df
                 st.success(f"Sample backlog loaded ({len(df)} tasks).")
@@ -264,7 +379,7 @@ with tab_backlog:
         with col_b:
             if st.session_state.backlog_df is not None:
                 csv_bytes = st.session_state.backlog_df.to_csv(index=False).encode()
-                st.download_button("⬇️ Download Current Backlog", csv_bytes,
+                st.download_button("⬇Download Current Backlog", csv_bytes,
                                    "backlog.csv", "text/csv", use_container_width=True)
 
 
@@ -304,7 +419,7 @@ with tab_team:
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("💾 Save Changes", use_container_width=True):
+        if st.button("Save Changes", use_container_width=True):
             save_testers_from_df(edited)
             st.success("Database updated!")
 
@@ -320,13 +435,13 @@ with tab_team:
     with col3:
         sub_cols = st.columns(2)
         with sub_cols[0]:
-            if st.button("📂 Sample Testers", use_container_width=True):
+            if st.button("Sample Testers", use_container_width=True):
                 new_t = pd.read_csv("sample_data/sample_testers.csv")
                 save_testers_from_df(new_t)
                 st.success("Loaded!")
                 st.rerun()
         with sub_cols[1]:
-            if st.button("🗑️ Clear DB", type="secondary", use_container_width=True):
+            if st.button("Clear DB", type="secondary", use_container_width=True):
                 clear_testers()
                 st.rerun()
 
@@ -344,7 +459,7 @@ with tab_analysis:
         backlog = st.session_state.backlog_df.copy()
         st.caption(f"{len(backlog)} tasks ready for classification.")
 
-        if st.button("🚀 Start Analysis", type="primary"):
+        if st.button("Start Analysis", type="primary"):
             testers_for_skills = load_testers_df()
             all_skills: list[str] = []
             for sk_str in testers_for_skills["skills"].dropna():
@@ -372,7 +487,7 @@ with tab_analysis:
             classified_df = pd.DataFrame(results)
             st.session_state.classified_df = classified_df
             save_tasks_from_df(classified_df)
-            st.success("✅ Classification complete!")
+            st.success("Classification complete!")
 
         if st.session_state.classified_df is not None:
             st.dataframe(
@@ -401,7 +516,7 @@ with tab_plan:
     if st.session_state.classified_df is None:
         st.warning("Run Analysis first so tasks have skill tags.")
     else:
-        if st.button("⚙️ Run Optimizer", type="primary"):
+        if st.button("Run Optimizer", type="primary"):
             testers_df = load_testers_df()
             tasks_df   = st.session_state.classified_df.copy().rename(columns={
                 "Sprint Commitment": "sprint_commitment",
@@ -430,7 +545,7 @@ with tab_plan:
                         })
                     save_assignments(assignments_list)
 
-                st.success(f"✅ Solver status: **{result['status']}**")
+                st.success(f"Solver status: **{result['status']}**")
 
         result = st.session_state.optimizer_result
         if result and not result["assignments"].empty:
@@ -476,7 +591,7 @@ with tab_gantt:
                 Start=start.strftime("%Y-%m-%d"),
                 Finish=end.strftime("%Y-%m-%d"),
                 Resource=r["tester_name"],
-                Skills=r.get("required_skills", "–"),
+                Skills=r.get("required_skills", ),
                 Description=r["task_description"][:60] + "…" if len(r["task_description"]) > 60
                             else r["task_description"],
             ))
@@ -563,7 +678,7 @@ with tab_heat:
 # TAB 8 — PM Override
 # ====================================================================
 with tab_pm:
-    st.subheader("✏️ PM Override — Reassign Tasks")
+    st.subheader("PM Override — Reassign Tasks")
     st.markdown("""
     Manually reassign tasks here. Saved overrides are stored in the `corrections` table
     and used as **few-shot examples** for future Gemini classifications.
@@ -590,8 +705,8 @@ with tab_pm:
             use_container_width=True,
             column_config={
                 "corrected_tester": st.column_config.SelectboxColumn(
-                    "🔄 Reassign To", options=tester_names, required=True),
-                "pm_notes": st.column_config.TextColumn("📝 PM Notes", width="medium"),
+                    "Reassign To", options=tester_names, required=True),
+                "pm_notes": st.column_config.TextColumn("PM Notes", width="medium"),
                 "id":              st.column_config.Column(disabled=True),
                 "tester_name":     st.column_config.Column("Original Tester", disabled=True),
                 "task_description":st.column_config.Column(disabled=True, width="large"),
@@ -606,7 +721,7 @@ with tab_pm:
         override_col, learn_col = st.columns(2)
 
         with override_col:
-            if st.button("💾 Save Overrides", type="primary", use_container_width=True):
+            if st.button("Save Overrides", type="primary", use_container_width=True):
                 saved = 0
                 for _, row in override_df.iterrows():
                     if row["corrected_tester"] != row["tester_name"]:
@@ -620,31 +735,31 @@ with tab_pm:
                         )
                         saved += 1
                 if saved:
-                    st.success(f"✅ Saved **{saved}** override(s) to corrections table.")
+                    st.success(f"Saved **{saved}** override(s) to corrections table.")
                 else:
                     st.info("No changes detected — all assignments match the original.")
 
         with learn_col:
-            if st.button("🧠 Sync & Learn", use_container_width=True,
+            if st.button("Sync & Learn", use_container_width=True,
                          help="Feed correction history as few-shot examples into the LLM on the next analysis run."):
                 corrections = load_corrections_df()
                 if corrections.empty:
                     st.warning("No corrections to sync yet. Save some overrides first.")
                 else:
                     st.success(
-                        f"✅ Synced **{len(corrections)}** correction(s) into the few-shot context. "
+                        f"Synced **{len(corrections)}** correction(s) into the few-shot context. "
                         "The next **Analysis** run will use these as guidance examples for Gemini."
                     )
-                    with st.expander("📚 Few-shot context preview"):
+                    with st.expander("Few-shot context preview"):
                         for _, c in corrections.head(5).iterrows():
                             st.markdown(
                                 f"- **Task**: _{c['task_description'][:80]}_  \n"
                                 f"  ✗ Was: `{c['original_tester']}` → ✓ Changed to: `{c['corrected_tester']}`"
-                                + (f"  \n  📝 *{c['pm_notes']}*" if c.get("pm_notes") else "")
+                                + (f"  \n  *{c['pm_notes']}*" if c.get("pm_notes") else "")
                             )
 
         st.divider()
-        st.markdown("#### 📜 All PM Corrections (History)")
+        st.markdown("#### All PM Corrections (History)")
         all_corr = load_corrections_df()
         if all_corr.empty:
             st.caption("No corrections recorded yet.")
