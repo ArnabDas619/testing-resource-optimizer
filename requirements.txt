@@ -1,0 +1,11 @@
+streamlit
+pandas
+scikit-learn
+google-generativeai
+openai
+langchain
+python-dotenv
+plotly
+pulp
+numpy
+faker

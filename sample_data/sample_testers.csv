@@ -1,0 +1,11 @@
+Name,Experience,Skills,Proficiency,Available Hours
+Alice Smith,6,"Manual Testing,Exploratory Testing,UI/UX Testing",High,40
+Bob Jones,8,"Automation,Selenium,Cypress,Playwright",High,40
+Charlie Brown,3,"Performance Testing,JMeter,Load Testing",Mid,20
+Diana Prince,10,"Security Testing,Penetration Testing,OWASP",High,40
+Eve Adams,5,"Accessibility,WCAG Audit,Screen Reader Testing",Mid,20
+Frank Castle,4,"Automation,Cypress,CI/CD Integration",Mid,40
+George Lucas,2,"Manual Testing,Exploratory Testing",Low,40
+Helen Troy,9,"Performance Testing,K6,JMeter",High,40
+Ian McKellen,3,"Security Testing,SQL Injection",Mid,20
+Jane Doe,7,"API Testing,Postman,SQL Testing",High,40

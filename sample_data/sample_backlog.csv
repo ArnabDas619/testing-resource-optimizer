@@ -1,0 +1,13 @@
+Sprint Commitment,Status,Task Description
+US-101,Not Started,Implement secure user authentication with OAuth2 support. Prevent brute-force login attacks and ensure session token encryption.
+US-102,Not Started,Redesign the home page landing UI to match new brand guidelines ensuring good colour contrast and WCAG compliance.
+US-103,In Progress,Optimise the shopping cart checkout flow to handle high concurrent user load during flash sales events using Redis caching.
+US-104,Not Started,Build REST API endpoints for the product catalogue. Write end-to-end automated tests for all endpoints using Playwright.
+US-105,Not Started,Migrate legacy user data to the new PostgreSQL schema. Validate data integrity with SQL testing scripts.
+US-106,Not Started,Fix screen reader navigation issues on the settings page and add aria-labels and role attributes to all form inputs.
+US-107,In Progress,Integrate Stripe payment gateway. Validate PII encryption end-to-end and test for SQL injection and XSS vulnerabilities.
+US-108,Not Started,Build transactional email notification service on order success. Write Selenium regression tests for the email dashboard.
+US-109,Not Started,Add Redis caching layer to reduce latency on the main dashboard page. Run load and performance benchmarks with JMeter.
+US-110,Not Started,Update the footer link to the latest Terms of Service document.
+US-111,Not Started,Add two-factor authentication via SMS and authenticator apps. Penetration test the token exchange flow.
+US-112,Not Started,Implement a CI/CD pipeline for automated test execution. Integrate Cypress tests into the GitHub Actions workflow.
