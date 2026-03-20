@@ -232,7 +232,7 @@ st.markdown('''
   Automated Sprint Staffing Optimizer
 </div>
 ''', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Hybrid Intelligence: Gemini + PuLP ILP · PM Override · Learning Loop</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Synergistic Staffing: AI Core • Human Guardrails • Continuous Adaptation</div>', unsafe_allow_html=True)
 
 # ============================================================
 # Tabs
@@ -394,11 +394,11 @@ with tab_team:
 
     db_df = load_testers_df()
     display_df = db_df.rename(columns={
-        "name": "Name", "experience_years": "Experience",
+        "id": "id", "name": "Name", "experience_years": "Experience",
         "skills": "Skills", "proficiency": "Proficiency",
         "available_hours": "Available Hours",
     }) if not db_df.empty else pd.DataFrame(
-        columns=["Name", "Experience", "Skills", "Proficiency", "Available Hours"])
+        columns=["id", "Name", "Experience", "Skills", "Proficiency", "Available Hours"])
 
     # Proficiency as a select column
     proficiency_options = ["Low", "Mid", "High"]
@@ -408,6 +408,7 @@ with tab_team:
         num_rows="dynamic",
         use_container_width=True,
         column_config={
+            "id": None,  # Hide ID column visually
             "Proficiency": st.column_config.SelectboxColumn(
                 "Proficiency", options=proficiency_options, required=True),
             "Available Hours": st.column_config.NumberColumn(

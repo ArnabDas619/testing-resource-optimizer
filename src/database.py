@@ -96,7 +96,7 @@ def save_testers_from_df(df: pd.DataFrame):
     }
     df = df.copy().rename(columns=rename_map)
     # Keep only recognised columns
-    allowed = {"name", "experience_years", "skills", "proficiency", "available_hours"}
+    allowed = {"id", "name", "experience_years", "skills", "proficiency", "available_hours"}
     df = df[[c for c in df.columns if c in allowed]]
     # Fill defaults
     if "experience_years" not in df.columns:
@@ -108,8 +108,39 @@ def save_testers_from_df(df: pd.DataFrame):
     if "available_hours" not in df.columns:
         df["available_hours"] = 40
 
-    conn = sqlite3.connect(DB_PATH)
-    df.to_sql("testers", conn, if_exists="replace", index=False)
+    conn = _get_conn()
+    
+    if "id" not in df.columns:
+        # Bulk insert (e.g. from CSV import)
+        conn.execute("DELETE FROM testers")
+        for _, row in df.iterrows():
+            conn.execute(
+                "INSERT INTO testers (name, experience_years, skills, proficiency, available_hours) VALUES (?, ?, ?, ?, ?)",
+                (row["name"], row["experience_years"], row["skills"], row["proficiency"], row["available_hours"])
+            )
+    else:
+        # Dynamic update (e.g. from data editor)
+        existing_ids = {r["id"] for r in conn.execute("SELECT id FROM testers")}
+        df_ids = set(df["id"].dropna().astype(int)) if not df.empty else set()
+        
+        to_delete = existing_ids - df_ids
+        if to_delete:
+            conn.execute(f"DELETE FROM testers WHERE id IN ({','.join(map(str, to_delete))})")
+            
+        for _, row in df.iterrows():
+            row_id = row.get("id")
+            if pd.isna(row_id):
+                conn.execute(
+                    "INSERT INTO testers (name, experience_years, skills, proficiency, available_hours) VALUES (?, ?, ?, ?, ?)",
+                    (row["name"], row["experience_years"], row["skills"], row["proficiency"], row["available_hours"])
+                )
+            else:
+                conn.execute(
+                    "UPDATE testers SET name=?, experience_years=?, skills=?, proficiency=?, available_hours=? WHERE id=?",
+                    (row["name"], row["experience_years"], row["skills"], row["proficiency"], row["available_hours"], int(row_id))
+                )
+    
+    conn.commit()
     conn.close()
 
 
@@ -137,8 +168,21 @@ def save_tasks_from_df(df: pd.DataFrame):
     df = df.copy().rename(columns=rename_map)
     allowed = {"sprint_commitment", "status", "task_description", "required_skills", "effort_hours"}
     df = df[[c for c in df.columns if c in allowed]]
-    conn = sqlite3.connect(DB_PATH)
-    df.to_sql("tasks", conn, if_exists="replace", index=False)
+    
+    conn = _get_conn()
+    conn.execute("DELETE FROM tasks")
+    for _, row in df.iterrows():
+        conn.execute(
+            "INSERT INTO tasks (sprint_commitment, status, task_description, required_skills, effort_hours) VALUES (?, ?, ?, ?, ?)",
+            (
+                row.get("sprint_commitment", ""),
+                row.get("status", "Not Started"),
+                row.get("task_description", ""),
+                row.get("required_skills", ""),
+                row.get("effort_hours", 8.0)
+            )
+        )
+    conn.commit()
     conn.close()
 
 
