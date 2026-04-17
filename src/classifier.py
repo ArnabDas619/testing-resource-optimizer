@@ -4,7 +4,7 @@ import json
 from src.config import ROLE_KEYWORDS
 
 try:
-    import google.generativeai as genai
+    from google import genai as genai_sdk
     _GENAI_AVAILABLE = True
 except ImportError:
     _GENAI_AVAILABLE = False
@@ -26,7 +26,8 @@ except ImportError:
 class TaskClassifier:
     def __init__(self, provider="Keyword Only", skill_list: list[str] | None = None):
         self.provider = provider
-        self.gemini_model = None
+        self.gemini_client = None
+        self.gemini_model_name = "gemini-2.0-flash"
         self.openai_client = None
         # Flat list of known skills from the tester matrix (used to constrain LLM output)
         self.skill_list = skill_list or []
@@ -34,9 +35,7 @@ class TaskClassifier:
         if self.provider == "Gemini" and _GENAI_AVAILABLE:
             api_key = os.getenv("GEMINI_API_KEY")
             if api_key:
-                genai.configure(api_key=api_key)
-                # Use gemini-2.0-flash (latest)
-                self.gemini_model = genai.GenerativeModel("gemini-2.0-flash")
+                self.gemini_client = genai_sdk.Client(api_key=api_key)
             else:
                 self.provider = "Keyword Only"
 
@@ -121,8 +120,11 @@ Rules:
 - If unsure, return ["Manual Testing"].
 """
         try:
-            if self.provider == "Gemini" and self.gemini_model:
-                response = self.gemini_model.generate_content(prompt)
+            if self.provider == "Gemini" and self.gemini_client:
+                response = self.gemini_client.models.generate_content(
+                    model=self.gemini_model_name,
+                    contents=prompt,
+                )
                 resp_text = (response.text.strip()
                              .removeprefix("```json").removeprefix("```")
                              .removesuffix("```").strip())

@@ -95,7 +95,7 @@ def save_testers_from_df(df: pd.DataFrame):
         "Type": "skills",
     }
     df = df.copy().rename(columns=rename_map)
-    # Keep only recognised columns
+    # Keep only recognised columns (exclude id — let AUTOINCREMENT handle it)
     allowed = {"name", "experience_years", "skills", "proficiency", "available_hours"}
     df = df[[c for c in df.columns if c in allowed]]
     # Fill defaults
@@ -108,8 +108,19 @@ def save_testers_from_df(df: pd.DataFrame):
     if "available_hours" not in df.columns:
         df["available_hours"] = 40
 
-    conn = sqlite3.connect(DB_PATH)
-    df.to_sql("testers", conn, if_exists="replace", index=False)
+    # Use explicit INSERT so the DDL schema (id AUTOINCREMENT) is preserved.
+    # to_sql(if_exists='replace') would silently drop and recreate the table
+    # without the PRIMARY KEY, breaking all foreign-key JOINs.
+    conn = _get_conn()
+    conn.execute("DELETE FROM testers")
+    for _, row in df.iterrows():
+        conn.execute(
+            "INSERT INTO testers (name, experience_years, skills, proficiency, available_hours) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (row["name"], int(row["experience_years"]), str(row["skills"]),
+             str(row["proficiency"]), int(row["available_hours"]))
+        )
+    conn.commit()
     conn.close()
 
 
@@ -137,8 +148,22 @@ def save_tasks_from_df(df: pd.DataFrame):
     df = df.copy().rename(columns=rename_map)
     allowed = {"sprint_commitment", "status", "task_description", "required_skills", "effort_hours"}
     df = df[[c for c in df.columns if c in allowed]]
-    conn = sqlite3.connect(DB_PATH)
-    df.to_sql("tasks", conn, if_exists="replace", index=False)
+    # Use explicit INSERT so the DDL schema (id AUTOINCREMENT) is preserved.
+    conn = _get_conn()
+    conn.execute("DELETE FROM tasks")
+    for _, row in df.iterrows():
+        conn.execute(
+            "INSERT INTO tasks (sprint_commitment, status, task_description, required_skills, effort_hours) "
+            "VALUES (?, ?, ?, ?, ?)",
+            (
+                row.get("sprint_commitment", ""),
+                row.get("status", "Not Started"),
+                row.get("task_description", ""),
+                row.get("required_skills", ""),
+                float(row.get("effort_hours", 8.0))
+            )
+        )
+    conn.commit()
     conn.close()
 
 
