@@ -260,8 +260,7 @@ with tab_dash:
       <circle cx="12" cy="8" r="5" fill="rgba(147,197,253,0.1)"/>
       <path d="M20 21a8 8 0 0 0-16 0" fill="rgba(147,197,253,0.1)"/>
       <path d="M12 13v8" stroke="rgba(255,255,255,0.3)"/>
-      <path d="M10 13l2 3 2-3" stroke="rgba(255,255,255,0.3)"/>
-      <path d="M6 14h2M6 17h3M18 14h-2M18 17h-3" stroke="rgba(255,255,255,0.3)"/>
+      <path d="M10 13l2 3 2-3" stroke="rgba(255,255,255,0.3)"/>      
     </svg>'''
     
     icon_backlog = '''<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="width:64px; height:64px; filter: drop-shadow(0 0 8px rgba(148,163,184,0.6));">
